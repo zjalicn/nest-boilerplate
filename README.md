@@ -4,7 +4,8 @@
 - Postgres SQL
 - Drizzle ORM
 
-## Database
+## Database
+
 You can create a local postgres database and add the credentials to the .env file
 
 ```bash
