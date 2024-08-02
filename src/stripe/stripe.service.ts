@@ -6,6 +6,6 @@ import { STRIPE_CLIENT } from 'src/stripe/constants';
 export class StripeService {
   stripeClient: Stripe;
   constructor(@Inject(STRIPE_CLIENT) private stripe: Stripe) {
-    this.stripeClient = stripe;
+    this.stripeClient = this.stripe;
   }
 }
