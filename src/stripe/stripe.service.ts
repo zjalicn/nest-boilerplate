@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { STRIPE_CLIENT } from 'src/stripe/constants';
 
 @Injectable()
-export class StripeService {
+export abstract class StripeService {
   stripeClient: Stripe;
   constructor(@Inject(STRIPE_CLIENT) private stripe: Stripe) {
     this.stripeClient = this.stripe;
