@@ -6,6 +6,7 @@ import { ProductModule } from './product/product.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
 import { EventHandlerModule } from './events/event-handler.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { EventHandlerModule } from './events/event-handler.module';
     EventHandlerModule,
     ProductModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
