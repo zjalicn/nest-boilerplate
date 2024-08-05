@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
+import { EventHandlerModule } from './events/event-handler.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     StripeModule.forRoot(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2024-04-10',
     }),
+    EventHandlerModule,
     ProductModule,
     UserModule,
   ],

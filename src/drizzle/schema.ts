@@ -1,6 +1,15 @@
-import { pgTable, text } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const userTable = pgTable('user', {
-  username: text('username').notNull().unique().primaryKey(),
+  // id: text('id').unique().primaryKey(),
+  username: text('username').notNull().unique(),
   password: text('hashed_password'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const productReferenceTable = pgTable('productReference', {
+  // id: uuid('uuid1').defaultRandom().unique().primaryKey(),
+  stripeProductId: text('stripeProductId').notNull(),
+  userId: text('userId').notNull(),
+  // createdAt: timestamp('created_at').defaultNow(),
 });
