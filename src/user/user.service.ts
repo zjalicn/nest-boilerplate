@@ -1,19 +1,13 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as schema from 'src/drizzle/schema';
-import { DrizzleProvider } from 'src/drizzle/drizzle.provider';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import * as argon2 from 'argon2';
 import { userTable } from 'src/drizzle/schema';
+import { DrizzleService } from 'src/drizzle/drizzle.service';
 
 @Injectable()
-export class UserService {
-  constructor(
-    @Inject(DrizzleProvider) private db: NodePgDatabase<typeof schema>,
-  ) {}
-
+export class UserService extends DrizzleService {
   async create(createUserDto: CreateUserDto) {
     const user = await this.db.query.userTable.findFirst({
       where: eq(userTable.username, createUserDto.username),
@@ -36,11 +30,10 @@ export class UserService {
     return newUser;
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
+  async findOne(id: string) {
+    // const user = await this.db.query.userTable.findFirst({
+    //   where: eq(userTable.id, id),
+    // });
     return `This action returns a #${id} user`;
   }
 
