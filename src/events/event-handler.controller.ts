@@ -1,8 +1,16 @@
-import { Controller, Inject, Post, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Inject,
+  Post,
+  RawBodyRequest,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import Stripe from 'stripe';
 import { STRIPE_CLIENT } from 'src/stripe/constants';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('api/webhooks')
 export class EventHandlerController {
@@ -15,8 +23,9 @@ export class EventHandlerController {
     this.stripeClient = this.stripe;
   }
 
+  @Public()
   @Post('')
-  async handleEvent(@Req() req: Request, @Res() res: Response) {
+  async handleEvent(@Req() req: RawBodyRequest<Request>, @Res() res: Response) {
     const sig = req.headers['stripe-signature'] as string;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -25,7 +34,7 @@ export class EventHandlerController {
     try {
       // Verify the event with Stripe's library
       event = this.stripeClient.webhooks.constructEvent(
-        req.body.raw,
+        req.rawBody,
         sig!,
         webhookSecret,
       );
