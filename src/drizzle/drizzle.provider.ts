@@ -8,7 +8,7 @@ export const drizzleProvider: Provider = {
   provide: DrizzleProvider,
   useFactory: async () => {
     const pool = new Pool({
-      connectionString: process.env.DB_URL!,
+      connectionString: process.env.DATABASE_URL!,
     });
     const db = drizzle(pool, { schema }) as NodePgDatabase<typeof schema>;
     return db;
