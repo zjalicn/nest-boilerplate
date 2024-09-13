@@ -18,8 +18,8 @@ export class AuthController {
   @Public() // or add the public decorator per method
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() request: AuthRequest) {
-    const token = this.authService.validateUser(request);
+  async create(@Body() request: AuthRequest) {
+    const token = await this.authService.validateUser(request);
 
     if (!token) {
       throw new HttpException('Invalid Credentials', 401);

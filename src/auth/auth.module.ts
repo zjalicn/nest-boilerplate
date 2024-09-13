@@ -4,6 +4,7 @@ import { AuthMiddleware } from './auth.middleware';
 import { AuthGuard } from './auth.guard';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { DrizzleModule } from 'src/drizzle/drizzle.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
       secret: process.env.JWT_TOKEN_SECRET || 'default',
       signOptions: { expiresIn: '1h' },
     }),
+    DrizzleModule,
   ],
   providers: [
     AuthService,
