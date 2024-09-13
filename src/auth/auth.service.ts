@@ -24,11 +24,14 @@ export class AuthService {
       },
     ];
     const findUser = users.find((user) => user.username === username);
+
     if (!findUser) return null;
     else {
       if (findUser.password === password) {
         const { password, ...user } = findUser;
-        return this.jwtService.sign({ user });
+        return this.jwtService.sign(user, {
+          secret: process.env.JWT_TOKEN_SECRET,
+        });
       } else return null;
     }
   }
