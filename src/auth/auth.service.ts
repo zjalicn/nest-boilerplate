@@ -1,11 +1,18 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { eq } from 'drizzle-orm';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { DrizzleProvider } from 'src/drizzle/drizzle.provider';
+import * as schema from 'src/drizzle/schema';
+import * as argon2 from 'argon2';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {
   private userId: string;
-
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @Inject(DrizzleProvider) private readonly db: NodePgDatabase<typeof schema>,
+  ) {}
 
   setUserId(userId: string) {
     this.userId = userId;
@@ -15,24 +22,17 @@ export class AuthService {
     return this.userId;
   }
 
-  validateUser({ username, password }) {
-    const users = [
-      {
-        id: 1,
-        username: 'niko',
-        password: 'password',
-      },
-    ];
-    const findUser = users.find((user) => user.username === username);
+  async validateUser({ username, password }) {
+    const user = await this.db.query.userTable.findFirst({
+      where: eq(schema.userTable.username, username),
+    });
+    if (!user) return null;
 
-    if (!findUser) return null;
-    else {
-      if (findUser.password === password) {
-        const { password, ...user } = findUser;
-        return this.jwtService.sign(user, {
-          secret: process.env.JWT_TOKEN_SECRET,
-        });
-      } else return null;
-    }
+    const passwordMatch = await argon2.verify(user.password, password);
+    if (passwordMatch) {
+      return this.jwtService.sign(user, {
+        secret: process.env.JWT_TOKEN_SECRET,
+      });
+    } else return null;
   }
 }
