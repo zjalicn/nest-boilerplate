@@ -30,12 +30,23 @@ export class UserService extends DrizzleService {
     return newUser;
   }
 
-  async findOne(id: string) {
-    // const user = await this.db.query.userTable.findFirst({
-    //   where: eq(userTable.id, id),
-    // });
-    return `This action returns a #${id} user`;
-  }
+  // findByUsername(username: string) {
+  //   // CHANGE TO QUERY DB LATER
+  //   // const user = await this.db.query.userTable.findFirst({
+  //   //   where: eq(userTable.id, id),
+  //   // });
+
+  //   //TEMPOERARY
+  //   const users = [
+  //     {
+  //       id: 1,
+  //       username: 'niko',
+  //       password: 'password',
+  //     },
+  //   ];
+
+  //   return users.find((user) => user.username === username);
+  // }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;

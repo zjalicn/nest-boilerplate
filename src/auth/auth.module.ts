@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthMiddleware } from './auth.middleware';
 import { AuthGuard } from './auth.guard';
@@ -25,6 +30,6 @@ import { DrizzleModule } from 'src/drizzle/drizzle.module';
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes('api/(.*)');
   }
 }
