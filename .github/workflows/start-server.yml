@@ -52,6 +52,9 @@ jobs:
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
           sudo apt update && sudo apt install ngrok
 
+      - name: Authenticate Ngrok
+        run: ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+
       - name: Start Ngrok
         run: ngrok http 3000 &
 
