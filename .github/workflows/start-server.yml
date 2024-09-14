@@ -45,20 +45,3 @@ jobs:
           STRIPE_PUB_KEY: ${{ secrets.STRIPE_PUB_KEY }}
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
-
-      - name: Install Ngrok
-        run: |
-          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && \
-          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && \
-          sudo apt update && sudo apt install ngrok
-
-      - name: Authenticate Ngrok
-        run: ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
-
-      - name: Start Ngrok
-        run: ngrok http 3000 &
-
-      - name: Get Ngrok public URL
-        run: |
-          sleep 5  # Give Ngrok some time to start
-          curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url'
