@@ -59,4 +59,11 @@ export class EventHandlerService extends DrizzleService {
     console.log(`Failed to update price with id: ${id}, table entry not found`);
     return null;
   }
+
+  @OnEvent('checkout.session.completed', { async: true })
+  async handleCheckoutSessionCompleted(message: Stripe.Checkout.Session) {
+    console.log('Checkout Session Completed');
+    console.log(message);
+    // do something with the event
+  }
 }
