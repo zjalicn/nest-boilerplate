@@ -8,17 +8,18 @@ export class ShopController {
 
   @Post()
   async create(@Body() createCheckoutDto: CreateCheckoutSessionDto) {
-    const { username, id } = createCheckoutDto;
+    const { username, id, priceId, quantity, cancel_url, success_url } =
+      createCheckoutDto;
     const customerId = await this.shopService.createOrRetrieveCustomer(
       username,
       id,
     );
     const session = await this.shopService.getCheckoutSessionUrl({
       customerId,
-      priceId: 'price_1PywkdKI5Vbl5VruKP5JLZhr',
-      quantity: 1,
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000/cancel',
+      priceId,
+      quantity,
+      success_url,
+      cancel_url,
     });
 
     return session;
