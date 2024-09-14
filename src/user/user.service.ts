@@ -34,7 +34,6 @@ export class UserService {
 
     const customer = await this.shopService.createOrRetrieveCustomer(
       createUserDto.email,
-      uuid,
     );
 
     const newUser = await this.db
