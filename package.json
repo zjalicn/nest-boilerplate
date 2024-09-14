@@ -14,6 +14,7 @@
     "start:prod": "node dist/main",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks",
     "stripe:trigger": "stripe trigger product.created",
+    "stripe:trigger:checkout": "stripe trigger checkout.session.completed",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
