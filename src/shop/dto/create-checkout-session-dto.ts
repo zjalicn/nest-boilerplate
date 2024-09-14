@@ -1,6 +1,5 @@
 export class CreateCheckoutSessionDto {
-  username: string;
-  id: string;
+  email: string;
   priceId: string;
   quantity: number;
   success_url: string;

@@ -8,23 +8,14 @@ import * as argon2 from 'argon2';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {
-  private userId: string;
   constructor(
     private readonly jwtService: JwtService,
     @Inject(DrizzleProvider) private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
-  setUserId(userId: string) {
-    this.userId = userId;
-  }
-
-  getUserId() {
-    return this.userId;
-  }
-
-  async validateUser({ username, password }) {
+  async validateUser({ email, password }) {
     const user = await this.db.query.userTable.findFirst({
-      where: eq(schema.userTable.username, username),
+      where: eq(schema.userTable.email, email),
     });
     if (!user) return null;
 

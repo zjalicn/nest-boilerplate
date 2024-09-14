@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DrizzleProvider } from 'src/drizzle/drizzle.provider';
-import { StripeService } from 'src/stripe/stripe.service';
 import * as schema from 'src/drizzle/schema';
 import Stripe from 'stripe';
 import { STRIPE_CLIENT } from 'src/stripe/constants';
 import { CheckoutSessionUrlData } from './types';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class ShopService {
@@ -18,18 +18,15 @@ export class ShopService {
     this.stripeClient = this.stripe;
   }
 
-  async createOrRetrieveCustomer(username: string, id: string) {
+  async createOrRetrieveCustomer(email: string) {
     // fetch customer from db
     // if customer exists, return customer id
-    const customerData: Stripe.CustomerCreateParams = {
-      metadata: {
-        id: id,
-        username: username,
-      },
-    };
-    const customer = await this.stripeClient.customers.create(customerData);
-    // insert into customer table here once one is created
-    return customer.id;
+
+    const user = await this.db.query.userTable.findFirst({
+      where: eq(schema.userTable.email, email),
+    });
+
+    return user.stripeCustomerId;
   }
 
   async getBillingPortalLink(customerId: string) {

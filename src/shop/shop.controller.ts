@@ -8,12 +8,9 @@ export class ShopController {
 
   @Post()
   async create(@Body() createCheckoutDto: CreateCheckoutSessionDto) {
-    const { username, id, priceId, quantity, cancel_url, success_url } =
+    const { email, priceId, quantity, cancel_url, success_url } =
       createCheckoutDto;
-    const customerId = await this.shopService.createOrRetrieveCustomer(
-      username,
-      id,
-    );
+    const customerId = await this.shopService.createOrRetrieveCustomer(email);
     const session = await this.shopService.getCheckoutSessionUrl({
       customerId,
       priceId,

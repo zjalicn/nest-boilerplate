@@ -9,8 +9,6 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly requestService: AuthService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    const userId = '123';
-    this.requestService.setUserId(userId);
     this.logger.log(AuthMiddleware.name);
     next();
   }
