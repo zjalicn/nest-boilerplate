@@ -14,16 +14,31 @@ export class AuthService {
   ) {}
 
   async validateUser({ email, password }) {
-    const user = await this.db.query.userTable.findFirst({
-      where: eq(schema.userTable.email, email),
-    });
-    if (!user) return null;
+    try {
+      const user = await this.db.query.userTable.findFirst({
+        where: eq(schema.userTable.email, email),
+      });
 
-    const passwordMatch = await argon2.verify(user.password, password);
-    if (passwordMatch) {
-      return this.jwtService.sign(user, {
+      if (!user) return null;
+
+      const passwordMatch = await argon2.verify(user.password, password);
+      if (passwordMatch) {
+        return this.jwtService.sign(user, {
+          secret: process.env.JWT_TOKEN_SECRET,
+        });
+      } else return null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async validateToken(token: string) {
+    try {
+      return this.jwtService.verify(token, {
         secret: process.env.JWT_TOKEN_SECRET,
       });
-    } else return null;
+    } catch (error) {
+      return false;
+    }
   }
 }
