@@ -5,13 +5,57 @@ services:
     image: postgres:14
     container_name: postgres
     environment:
-      POSTGRES_USER: username
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # drizzle-studio:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.drizzle
+  #   container_name: drizzle-studio
+  #   ports:
+  #     - '8080:8080'
+  #   environment:
+  #     DATABASE_URL: postgres://username:password@localhost:5432/postgres
+  #     POSTGRES_USER: ${DATABASE_USER}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #     POSTGRES_DB: ${DATABASE_NAME}
+  #   depends_on:
+  #     - postgres
+
+  nest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: server
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+      echo 'Running generate command...' &&
+      npm run generate &&
+      echo 'Running migrate command...' &&
+      npm run migrate &&
+      echo 'Starting NestJS...' &&
+      npm run start:dev"
 
 volumes:
   postgres_data:

@@ -1,7 +1,17 @@
-FROM postgres:14
+FROM node:latest
 
-ENV POSTGRES_USER=username
-ENV POSTGRES_PASSWORD=password
-ENV POSTGRES_DB=dbname
+WORKDIR /app
 
-EXPOSE 5432
+COPY package*.json ./
+
+RUN npm install -g drizzle-kit
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]

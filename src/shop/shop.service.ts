@@ -20,13 +20,19 @@ export class ShopService {
 
   async createOrRetrieveCustomer(email: string) {
     // fetch customer from db
+
     // if customer exists, return customer id
 
-    const user = await this.db.query.userTable.findFirst({
-      where: eq(schema.userTable.email, email),
+    const customer = await this.stripeClient.customers.create({
+      email,
     });
 
-    return user.stripeCustomerId;
+    // const user = await this.db.query.userTable.findFirst({
+    //   where: eq(schema.userTable.email, email),
+    // });
+
+    // return user.stripeCustomerId;
+    return customer.id;
   }
 
   async getBillingPortalLink(customerId: string) {

@@ -1,2 +1,0 @@
-ALTER TABLE "productReference" ADD COLUMN "uuid1" uuid DEFAULT gen_random_uuid() NOT NULL;--> statement-breakpoint
-ALTER TABLE "productReference" ADD CONSTRAINT "productReference_uuid1_unique" UNIQUE("uuid1");

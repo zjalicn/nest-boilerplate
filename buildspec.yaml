@@ -1,0 +1,50 @@
+version: 0.2
+
+env:
+  parameter-store:
+    AWS_ACCOUNT_ID: /CodeBuild/AWS_ACCOUNT_ID
+    DOCKERUSER: /CodeBuild/dockeruser
+    DOCKERPW: /CodeBuild/dockerpw
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      - echo "Installing dependencies..."
+      - curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      - chmod +x /usr/local/bin/docker-compose
+      - docker-compose --version
+      - echo "Docker and docker-compose installed successfully"
+
+  pre_build:
+    commands:
+      - aws --version
+      - echo "Connecting to Amazon ECR..."
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo "Pulling existing Docker images (if available)..."
+      - docker-compose pull || true
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - echo "Building Docker images with Docker Compose..."
+      - docker-compose build
+      - echo "Tagging Docker images..."
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - echo "Build completed - `date`"
+      - echo "Pushing Docker images to Amazon ECR..."
+      - docker-compose push
+      - echo "Writing imagedefinitions.json..."
+      - printf '[{"name":"%s", "imageUri":"%s"}]' $CONTAINER_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
+
+artifacts:
+  files: imagedefinitions.json
+
+cache:
+  paths:
+    - node_modules/**/*

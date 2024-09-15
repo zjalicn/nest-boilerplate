@@ -4,7 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { eq } from 'drizzle-orm';
 import * as argon2 from 'argon2';
 import { userTable } from 'src/drizzle/schema';
-import { DrizzleService } from 'src/drizzle/drizzle.service';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from 'src/drizzle/schema';
 import { ShopService } from 'src/shop/shop.service';
@@ -13,10 +12,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
-  // constructor(db: NodePgDatabase<typeof schema>) {
-  //   super(db);
-  // }
-
   constructor(
     @Inject(DrizzleProvider) private readonly db: NodePgDatabase<typeof schema>,
     private readonly shopService: ShopService,
@@ -50,24 +45,6 @@ export class UserService {
 
     return newUser;
   }
-
-  // findByUsername(username: string) {
-  //   // CHANGE TO QUERY DB LATER
-  //   // const user = await this.db.query.userTable.findFirst({
-  //   //   where: eq(userTable.id, id),
-  //   // });
-
-  //   //TEMPOERARY
-  //   const users = [
-  //     {
-  //       id: 1,
-  //       username: 'niko',
-  //       password: 'password',
-  //     },
-  //   ];
-
-  //   return users.find((user) => user.username === username);
-  // }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
