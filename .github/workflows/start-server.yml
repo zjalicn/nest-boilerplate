@@ -33,6 +33,9 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Fix permissions
+        run: sudo chown -R $USER:$GROUPS .
+
       - name: Install dependencies
         run: npm install
 
