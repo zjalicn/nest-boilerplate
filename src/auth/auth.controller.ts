@@ -23,6 +23,11 @@ export class AuthController {
     const token = await this.authService.validateUser(request);
     const user = await this.authService.validateToken(token);
 
+    // Remove sensitive information from the user object.
+    // Should maybe be done when signing the token to store sensitive information in the token.
+    delete user.password;
+    delete user.stripeCustomerId;
+
     if (!token) {
       throw new HttpException('Invalid Credentials', 401);
     }
