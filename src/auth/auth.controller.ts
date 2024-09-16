@@ -37,6 +37,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = await this.authService.validateToken(request.token);
-    return res.send(user ? true : false);
+
+    return res.send({ user, isValid: !!user });
   }
 }
